@@ -1,0 +1,240 @@
+{
+    "action": {
+        "propertiesLight": [
+            "name",
+            "url",
+            "alternateName",
+            "actionStatus",
+            "startTime",
+            "endTime",
+            "object",
+            "result",
+            "error"
+        ],
+        "headings": {
+            "heading1": {
+                "properties": ["name"],
+                "separator": ", "
+            },
+            "heading2": {
+                "properties": ["url"],
+                "separator": ", "
+            },
+            "headingText": {
+                "properties": ["description"],
+                "separator": ", "
+            }
+        },
+        "name": {
+            "en-US": "action",
+            "fr-CA": "action"
+        }
+    },
+    "organization": {
+        "propertiesLight": ["name", "address", "telephone", "email", "url"],
+        "headings": {
+            "heading1": {
+                "properties": ["name"],
+                "separator": ", "
+            },
+            "heading2": {
+                "properties": ["url"],
+                "separator": ", "
+            },
+            "headingText": {
+                "properties": ["description"],
+                "separator": ", "
+            }
+        },
+        "name": {
+            "en-US": "organization",
+            "fr-CA": "entreprise"
+        }
+    },
+    "person": {
+        "propertiesLight": [
+            "givenName",
+            "familyName",
+            "jobTitle",
+            "worksFor",
+            "address",
+            "email",
+            "telephone"
+        ],
+        "headings": {
+            "heading1": {
+                "properties": ["givenName", "familyName"],
+                "separator": " "
+            },
+            "heading2": {
+                "properties": ["email"],
+                "separator": ", "
+            },
+            "headingText": {
+                "properties": ["description"],
+                "separator": ", "
+            }
+        },
+        "name": {
+            "en-US": "contact",
+            "fr-CA": "contact"
+        }
+    },
+    "postaladdress": {
+        "propertiesLight": [
+            "streetAddress",
+            "addressLocality",
+            "addressRegion",
+            "addressCountry",
+            "postalCode"
+        ],
+        "headings": {
+            "heading1": {
+                "properties": [
+                    "streetAddress",
+                    "addressLocality",
+                    "addressRegion"
+                ],
+                "separator": ", "
+            },
+            "heading2": {
+                "properties": ["addressCountry", "postalCode"],
+                "separator": ", "
+            },
+            "headingText": {
+                "properties": [],
+                "separator": ", "
+            }
+        },
+        "name": {
+            "en-US": "address",
+            "fr-CA": "adresse"
+        }
+    },
+    "listitem": {
+        "propertiesLight": ["name", "url", "item", "position"],
+        "headings": {
+            "heading1": {
+                "properties": ["item"],
+                "separator": ", "
+            },
+            "heading2": {
+                "properties": ["item"],
+                "separator": ", "
+            },
+            "headingText": {
+                "properties": ["item"],
+                "separator": ", "
+            },
+            "headingImage": {
+                "properties": ["item"],
+                "separator": ", "
+            }
+        },
+        "name": {
+            "en-US": "item",
+            "fr-CA": "item"
+        }
+    },
+    "imageobject": {
+        "propertiesLight": ["name", "contentUrl"],
+        "headings": {
+            "heading1": {
+                "properties": ["name"],
+                "separator": ", "
+            },
+            "heading2": {
+                "properties": ["contentUrl"],
+                "separator": ", "
+            },
+            "headingText": {
+                "properties": ["description"],
+                "separator": ", "
+            },
+            "headingImage": {
+                "properties": ["contentUrl"],
+                "separator": ", "
+            },
+            "headingThumbnail": {
+                "properties": ["thumbnail"],
+                "separator": ", "
+            }
+        },
+        "name": {
+            "en-US": "image",
+            "fr-CA": "image"
+        }
+    },
+    "thing": {
+        "propertiesLight": ["name", "url"],
+        "headings": {
+            "heading1": {
+                "properties": ["name"],
+                "separator": ", "
+            },
+            "heading2": {
+                "properties": ["url"],
+                "separator": ", "
+            },
+            "headingText": {
+                "properties": ["description"],
+                "separator": ", "
+            },
+            "headingImage": {
+                "properties": ["image"],
+                "separator": ", "
+            },
+            "headingThumbnail": {
+                "properties": ["image"],
+                "separator": ", "
+            }
+        },
+        "name": {
+            "en-US": "thing",
+            "fr-CA": "chose"
+        }
+    },
+    "givenname": {
+        "name": {
+            "en-US": "first name",
+            "fr-CA": "prénom"
+        }
+    },
+    "familyname": {
+        "name": {
+            "en-US": "last name",
+            "fr-CA": "nom"
+        }
+    },
+    "addresscountry": {
+        "name": {
+            "en-US": "country",
+            "fr-CA": "pays"
+        }
+    },
+    "addresslocality": {
+        "name": {
+            "en-US": "city",
+            "fr-CA": "ville"
+        }
+    },
+    "addressregion": {
+        "name": {
+            "en-US": "state",
+            "en-CA": "province",
+            "fr-CA": "province"
+        }
+    },
+    "postalcode": {
+        "name": {
+            "en-US": "zipcode",
+            "fr-CA": "postalcode"
+        }
+    },
+    "streetaddress": {
+        "name": {
+            "en-US": "street",
+            "fr-CA": "rue"
+        }
+    }
+}

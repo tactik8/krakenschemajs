@@ -1,19 +1,40 @@
+import  configRecord from '../../ref/configRecord.json' with { type: 'json' };
+
+import { schemaHeadings } from './src/schema_headings.js';
+
+import { get_jsonSchema } from './src/schema_jsonSchema.js';
+import { get_jsonSchemaLight } from './src/schema_jsonSchema.js';
+import { get_htmlType } from './src/schema_htmlTypes.js';
+import { get_jsonSchemaType } from './src/schema_jsonTypes.js';
+
+import { get_localizedName } from './src/schema_localization.js';
+
 export class KrSchemaItem {
     /* Contains metadata to qualify a value
 
-    attributes:
-   \
-   - type_html: returns the html type (text, url, email, etc)
-   - type_
-   - value_options: possible values (when iteration present)
-   - minimumViableProperties: plist of minimu property names for simple record
+    Attributes:
+    - classes:
+        - parentClasses: the classes (things) that are parent to the schema (thing -> person)
+        - properties: the properties items that are part of the class
+        - proeprtiesLight: minimum set of properties
+        - jsonSchema: returns jsonSchema for given class
+        - jsonSchemaLight: returns jsonSchema with only light properties
+    - properties:
+        - expectedTypes: list of all types expected for the value of the property
+        - expectedType: most frequent type for the property
+    - types:    
+        - htmlType: returns the html type (text, url, email, etc) for forms
+        - enumerationItems: returns expected items for value (dropdown list)
    
 
-
     Methods:
-    - get_heading1:     given a record, returns heading1 value
-    - get_heading2:     given a record, returns heading12 value
-    - get_headingText:  given a record, returns headingText value
+    - getProperty(propertyID):   returns a specific property
+    - getLocalizedID:            returns localized version of id/propertyID
+    - getLocalizedPropertyID:    duplicate
+    - get_heading1(record):      given a record, returns heading1 value
+    - get_heading2(record):      given a record, returns heading2 value
+    - get_headingText(record):   given a record, returns headingText value
+    - get_heading_image(record): returns url for the image 
   
     */
 
@@ -84,18 +105,15 @@ export class KrSchemaItem {
 
     get propertiesLight() {
         // returns own properties and all properties of elements that are parent to it.
-
         let properties = [];
-
         let minProp = this.minimumViableProperties;
         for (let i = 0; i < minProp.length; i++) {
             properties.push(this.getProperty(minProp[i]));
         }
-
         return properties;
     }
+    
     // methods
-
     getProperty(propertyID) {
         let properties = [...this.properties];
 
@@ -109,14 +127,12 @@ export class KrSchemaItem {
 
     get expectedType() {
 
-        
         if (this._expectedTypes.length == 0) {
             return null;
         }
         if (this._expectedTypes.length == 1) {
             return this._expectedTypes[0];
         }
-
         
         for (let i = 0; i < this._expectedTypes.length; i++) {
             
@@ -140,126 +156,23 @@ export class KrSchemaItem {
         return null;
     }
 
-    get jsonSchemaType(){
-
-        if (this.parentClasses.includes("Enumeration")) {
-            return "string";
-        };
-            
-        switch (this.record_id) {
-            case "Boolean": {
-                return "boolean";
-            }
-            case "Date": {
-                return "string";
-            }
-            case "DateTime": {
-                return "string";
-            }
-            case "Number": {
-                return "number";
-            }
-            case "Float": {
-                return "number";
-            }
-            case "Integer": {
-                return "integer";
-            }
-            case "Text": {
-                return "string";
-            }
-            case "CssSelectorType": {
-                return "string";
-            }
-            case "PronounceableText": {
-                return "string";
-            }
-            case "URL": {
-                return "string";
-            }
-            case "url": {
-                return "string";
-            }
-            case "XPathType": {
-                return "string";
-            }
-            case "Time": {
-                return "string";
-            }
-            default:
-                return "object";
-        }
-        
-    }
-    get htmlType() {
-        // Returns the corresponding html type for forms
-
-        // if
-        if (this.parentClasses.includes("Enumeration")) {
-            return "select";
-        }
-
-        switch (this.record_id) {
-            case "Boolean": {
-                return "checkbox";
-            }
-            case "Date": {
-                return "date";
-            }
-            case "DateTime": {
-                return "datetime-local";
-            }
-            case "Number": {
-                return "number";
-            }
-            case "Float": {
-                return "number";
-            }
-            case "Integer": {
-                return "number";
-            }
-            case "Text": {
-                return "text";
-            }
-            case "CssSelectorType": {
-                return "text";
-            }
-            case "PronounceableText": {
-                return "text";
-            }
-            case "URL": {
-                return "url";
-            }
-            case "url": {
-                return "url";
-            }
-            case "XPathType": {
-                return "text";
-            }
-            case "Time": {
-                return "time";
-            }
-            default:
-                return "object";
-        }
-    }
-
     get minimumViableProperties() {
         /**
          * Returns most common properties.
          */
         let record_id = this.record_id.replace("schema:", "");
+        record_id = record_id.toLowerCase();
 
         //let properties =  this.record[record_id]['minimumKeys'];
 
         let properties;
 
         if (
-            this.configRecord[record_id] &&
-            this.configRecord[record_id]["minimumKeys"] &&
-            this.configRecord[record_id]["minimumKeys"].length > 0
+            configRecord[record_id] &&
+            configRecord[record_id]["propertiesLight"] &&
+            configRecord[record_id]["propertiesLight"].length > 0
         ) {
-            properties = this.configRecord[record_id]["minimumKeys"];
+            properties = configRecord[record_id]["propertiesLight"];
         } else {
             properties = ["name", "url"];
         }
@@ -267,326 +180,68 @@ export class KrSchemaItem {
         return properties;
     }
 
-    
-    get_heading1(record) {
+    // localization
+    getLocalizedPropertyID(locale, defaultValue){
+        return get_localizedName(this.record_id, locale, defaultValue);
+    }
 
-        return this.getHeadings(record,'heading1');
+    // Headings
+    get_heading1(record) {
+        return schemaHeadings.get_heading1(record);
     }
 
     get_heading2(record) {
-
-        return this.getHeadings(record,'heading2');
+        return schemaHeadings.get_heading1(record);
     }
 
+    get_headingText(record) {
+        return schemaHeadings.get_headingText(record);
+    }
+    
     get_heading_text(record) {
-
-        
-        return this.getHeadings(record,'heading_text');
+        return schemaHeadings.get_headingText(record);
     }
 
+    get_headingImage(record){
+        return schemaHeadings.get_headingImage(record);
+    }
+    
     get_heading_image(record){
-
-        var imageUrl = null;
-        
-        if (record['@type'] == 'listitem'){
-            record = record.item;
-        };
-        if(record.image && record.image.contentUrl){
-            imageUrl = record.image.contentUrl;
-        };
-        if(record.contentUrl){
-            imageUrl = record.contentUrl;
-        };
-        return imageUrl;
+        return schemaHeadings.get_headingImage(record);
     }
 
-    getHeadings(record, headingName){
-
-        var record_type = record['@type'].toLowerCase();
-        if( this.configRecord[record_type]){
-            var keys = this.configRecord[record_type][headingName]["properties"];
-            var separator = this.configRecord[record_type][headingName]["separator"];
-        } else {
-            var keys = this.configRecord['thing'][headingName]["properties"];
-            var separator = this.configRecord['thing'][headingName]["separator"];
-        };
-
-
-        
-        let values = [];
-        
-        for (let i=0; i< keys.length; i++){
-
-            var items = keys[i].split('.');
-            
-            var value = record;
-
-            for (let t=0; t<items.length; t++){
-                value = value[items[t]];
-            };
-
-            if (value && value['@type']){
-                value = this.getHeadings(value, headingName);
-            };
-            
-            values.push(value);
-        };
-
-        var newValue = values.filter(Boolean).join(separator);
-        
-        return newValue;
-
-        
+    get_headingThumbnail(record){
+        return schemaHeadings.get_headingThumbnail(record);
+    }
+    
+    get_heading_thumbnail(record){
+        return schemaHeadings.get_headingThumbnail(record);
     }
 
 
+    // types
+
+    get jsonSchemaType(){
+        return get_jsonSchemaType(this);
+    }
+
+    get htmlType() {
+        // Returns the corresponding html type for forms
+        return get_htmlType(this);
+    }
+    
+    // Json schemas
     get jsonSchema() {
-
-        if(this.enumerationItems && this.enumerationItems.length > 0){
-
-
-            var choices = [];
-            for(let i=0; i< this.enumerationItems.length; i++){
-                choices.push(this.enumerationItems[i].record_id);
-            };
-
-
-            var jsonRecord = {
-                type: "string",
-                    choices: choices
-            };
-            return jsonRecord;
-
-        };
-
-        
-        if (this.record_id == 'URL'){
-            return {
-                    type: this.htmlType,
-                };
-        };
-
-
-        
-
-
-        
-
-        if (this.record_type == "rdfs:Class") {
-
-            var jsonRecord = {
-                title: this.record_id,
-                type: "object",
-                properties: {},
-            };
-
-            for (let i=0; i < this.properties.length; i++) {
-                var p=this.properties[i];
-                if(p){
-                    jsonRecord.properties[p.record_id] = p.jsonSchema;
-                };
-            };
-
-            return jsonRecord;
-
-        } else if (this.record_type == "rdf:Property") {
-            var jsonRecord = {
-                type: "array",
-                items: this.expectedType.jsonSchema,
-            };
-            return jsonRecord;
-
-        } else if (this.record_type == 'schema:DataType') {
-            var jsonRecord = {
-                type: this.jsonSchemaType,
-                tags: [this.htmlType]
-            };
-            return jsonRecord;
-        }
+        return get_jsonSchema(this);
     }
+    
     get jsonSchemaLight() {
-
-
-        if(this.enumerationItems && this.enumerationItems.length > 0){
-
-            var choices = [];
-            for(let i=0; i< this.enumerationItems.length; i++){
-                choices.push(this.enumerationItems[i].record_id);
-            };
-            
-            
-            var jsonRecord = {
-                type: "string",
-                choices: choices
-            };
-            return jsonRecord;
-            
-        };
-
-        
-        if (this.record_id == 'URL'){
-            return {
-                    type: this.jsonSchemaType,
-                    tags: [this.htmlType]
-                };
-        };
-        
-        if (this.record_type == "rdfs:Class") {
-
-            var jsonRecord = {
-                title: this.record_id,
-                type: "object",
-                properties: {},
-            };
-
-            for (let i=0; i < this.propertiesLight.length; i++) {
-                var p=this.propertiesLight[i];
-                if(p){
-                    jsonRecord.properties[p.record_id] = p.jsonSchemaLight;
-                };
-            };
-
-            return jsonRecord;
-            
-        } else if (this.record_type == "rdf:Property") {
-            var jsonRecord = {
-                type: "array",
-                items: this.expectedType.jsonSchemaLight,
-            };
-            return jsonRecord;
-            //return this.expectedType.jsonSchemaLight;
-            
-        } else if (this.record_type == 'schema:DataType') {
-            var jsonRecord = {
-                type: this.jsonSchemaType,
-                tags: [this.htmlType]
-            };
-            return jsonRecord;
-        }
+        return get_jsonSchemaLight(this);
     }
 
     
-
-    get configRecord() {
-        let record = {
-            action: {
-                minimumKeys: [
-                    "name",
-                    "url",
-                    "alternateName",
-                    "actionStatus",
-                    "startTime",
-                    "endTime",
-                    "object",
-                    "result",
-                    "error",
-                ],
-                heading1Keys: null,
-                heading1Separator: null,
-            },
-
-            organization: {
-                minimumKeys: ["name", "address", "telephone", "email", "url"],
-                heading1: {
-                    properties: ["name"],
-                    separator: ", ",
-                },
-                heading2: {
-                    properties: ["url"],
-                    separator: ", ",
-                },
-            },
-
-            person: {
-                minimumKeys: [
-                    "givenName",
-                    "familyName",
-                    "jobTitle",
-                    "worksFor",
-                    "address",
-                    "email",
-                    "telephone",
-                ],
-                heading1: {
-                    properties: ["givenName", "familyName"],
-                    separator: " ",
-                },
-                heading2: {
-                    properties: ["email"],
-                    separator: ", ",
-                },
-            },
-
-            postaladdress: {
-                minimumKeys: [
-                    "streetAddress",
-                    "addressLocality",
-                    "addressRegion",
-                    "addressCountry",
-                    "postalCode",
-                ],
-                heading1: {
-                    properties: [
-                        "streetAddress",
-                        "addressLocality",
-                        "addressRegion",
-                    ],
-                    separator: ", ",
-                },
-                heading2: {
-                    properties: ["addressCountry", "postalCode"],
-                    separator: ", ",
-                },
-            },
-            
-            listitem: {
-                minimumKeys: [
-                    "name",
-                    "url",
-                    "item",
-                    "position"
-                ],
-                heading1: {
-                    properties: [
-                        "item",
-                    ],
-                    separator: ", ",
-                },
-                heading2: {
-                    properties: ["item"],
-                    separator: ", ",
-                },
-                heading_text: {
-                    properties: ["item"],
-                    separator: ", ",
-                },
-            },
-            
-            thing: {
-                    minimumKeys: [
-                        "name",
-                        "url"
-                    ],
-                    heading1: {
-                        properties: [
-                            "name",
-                        ],
-                        separator: ", ",
-                    },
-                    heading2: {
-                        properties: ["url"],
-                        separator: ", ",
-                    },
-                    heading_text: {
-                        properties: ["description"],
-                        separator: ", ",
-                    },
-                },
-        };
-
-        return record;
-    }
 }
+
 
 function ensureNotArray(value) {
     let new_value = ensureArray(value);
